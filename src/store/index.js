@@ -1,5 +1,5 @@
 import { createReducer, configureStore } from '@reduxjs/toolkit';
-import { incrementCurrentPage, decrementCurrentPage, setSearchStr, sortPosts } from './action';
+import { incrementCurrentPage, decrementCurrentPage, setSearchStr, sortPosts, choosePage } from './action';
 
 const initialState = {
     allPosts: [],
@@ -103,6 +103,20 @@ const reducer = createReducer(initialState, (builder) => {
         currentPosts: newPosts.slice(0, 10),
         sortParams: action.payload,
       }
+    })
+
+    .addCase(choosePage, (state, action) => {
+      const firstPosition = action.payload * 10;
+      const lastPosition = action.payload * 10 + 10;
+      const posts = findDesiredPosts(state.allPosts
+  , state.searchStr);
+      const newPosts = streamline(posts, state.sortParams);
+
+      return {
+        ...state, 
+        currentPage: action.payload,
+        desiredPosts: newPosts,
+        currentPosts: newPosts.slice(firstPosition, lastPosition),}
     })
 });
 

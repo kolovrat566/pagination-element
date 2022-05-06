@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { NumberItem } from './NumberItem';
 
 const arr = [];
 for (let i = 1; i <= 10; i++) {
@@ -17,35 +18,36 @@ export const NumberContainer = () => {
     if (allPosts.length !== 0) setCountPage(Math.ceil(posts.length / 10));
   }, [posts.length, currentPage]);
 
-  const viewNumber = () => {
-    if (countPage <= 5) return arr.slice(0,countPage)
-    else {
-      if (currentPage < 3) return arr.slice(0,5)
-      if (currentPage < countPage-2) return arr.slice(currentPage-2, currentPage+3)
-      else return arr.slice(countPage-5, countPage)
-    }
-  };
-
   return (
     <Container>
       {
-        viewNumber().map((item) => {
-          const active = item===currentPage+1
-
-          const NumberItem = styled.div({
-            fontFamily: 'Roboto',
-            fontStyle: 'italic',
-            fontWeight: '700',
-            fontSize: '18px',
-            lineHeight: '137.69%',
-            padding: '0 7px 0 7px',
-            color: active ? '#7EBC3C' : '#474955',
-          });
-
-          return (
-            <NumberItem>{item}</NumberItem>
-          )
-        })
+        countPage <= 5 ?
+        <>{arr.slice(0,countPage).map((item) => { return <NumberItem text={item} active={item === currentPage + 1}/>})}</>
+        :
+        <>
+          {
+            currentPage < 3 ? 
+            <>{arr.slice(0,5).map((item) => { 
+              return <NumberItem text={item} active={item === currentPage  + 1}/>
+              })}
+            </> 
+            :
+            <>
+              {
+                currentPage < countPage-2 ? 
+                <>{arr.slice(currentPage-2, currentPage+3).map((item) => { 
+                  return <NumberItem text={item} active={item === currentPage  + 1}/>
+                  })}
+                </>
+                :
+                <>{arr.slice(countPage-5, countPage).map((item) => { 
+                  return <NumberItem text={item} active={item === currentPage + 1}/>
+                  })}
+                </>
+              }
+            </>
+          }
+        </>
       }
     </Container>
   )
